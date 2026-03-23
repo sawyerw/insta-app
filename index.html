@@ -33,17 +33,23 @@
 </head>
 
 <body>
-  <div id="demo">
-    <h1>insta-app</h1>
-    <!-- this is going to do whatever the tag's defaults are -->
-    <h2>Default</h2>
-    <insta-app></insta-app>
-    <h2>Slot usage</h2>
-    <insta-app data-accent="2" data-primary="17"><div>Sample slot content</div></insta-app>
-    <h2>Property usage</h2>
-    <insta-app id="example" title="Sample property sawyer"></insta-app>
-  </div>
-  <script type="module" src="./insta-app.js"></script>
+  <insta-app index="3">
+  <insta-slide insta-caption="Check out this fox! (1)" insta-username="@ahoy.soy" insta-channel="Sawyer">
+    <p>Heyyyy girlie love your fox. Woah dude great pic. OMG SO CUTE!! (>_<) I WANT ONE!!
+    </p>
+  </insta-slide>
+<insta-slide insta-caption="Woahh a fox (2)" insta-username="@izzy" insta-channel="Izzy">
+    <p>Second post comments</p>
+  </insta-slide>
+<insta-slide insta-caption="So cute and fluffy omg!! Yay fox (3)" insta-username="@sydney" insta-channel="Sydney">
+    <p>Third post comments</p>
+  </insta-slide>
+<insta-slide insta-caption="Another one (4)" insta-username="@ethan" insta-channel="Ethan">
+    <p>Fourth post comments</p>
+  </insta-slide>
+</insta-app>
+<script type="module" src="./insta-app.js"></script>
+<script type="module" src="./insta-slide.js"></script>
 
   <!-- Take HAX, the Web and you further down the rabbit hole -->
   <style>

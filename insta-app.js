@@ -5,6 +5,9 @@
 import { LitElement, html, css } from "lit";
 import { DDDSuper } from "@haxtheweb/d-d-d/d-d-d.js";
 import { I18NMixin } from "@haxtheweb/i18n-manager/lib/I18NMixin.js";
+import "./insta-slide.js";
+import "./insta-slide-arrow.js";
+import "./insta-slide-indicator.js";
 
 /**
  * `insta-app`
@@ -20,6 +23,13 @@ export class InstaApp extends DDDSuper(I18NMixin(LitElement)) {
 
   constructor() {
     super();
+    // start at the first slide unless index attribute is provided
+    this.index = 0;
+    // slideCount will be computed based on slotted slides
+    this.slideCount = 0;
+    // wrap behavior on by default
+    this.wrap = true;
+    // prev code
     this.title = "";
     this.t = this.t || {};
     this.t = {
@@ -29,7 +39,7 @@ export class InstaApp extends DDDSuper(I18NMixin(LitElement)) {
     this.registerLocalization({
       context: this,
       localesPath:
-        new URL("./locales/insta-app.ar.json", import.meta.url).href +
+        new URL("./locales/insta-app.", import.meta.url).href +
         "/../",
     });
   }
@@ -39,6 +49,8 @@ export class InstaApp extends DDDSuper(I18NMixin(LitElement)) {
     return {
       ...super.properties,
       title: { type: String },
+    index: { type: Number }, // added index for current slide
+      slideCount: { type: Number } // added slideCount to track total slides, fix dots to load
     };
   }
 
@@ -55,21 +67,71 @@ export class InstaApp extends DDDSuper(I18NMixin(LitElement)) {
       .wrapper {
         margin: var(--ddd-spacing-2);
         padding: var(--ddd-spacing-4);
+        position: relative;
       }
       h3 span {
-        font-size: var(--insta-app-label-font-size, var(--ddd-font-size-s));
+        font-size: var(--play-list-project-label-font-size, var(--ddd-font-size-s));
       }
+
+    ::slotted(insta-slide) {
+      display: block;
+    }
+
+
     `];
   }
 
   // Lit render the HTML
   render() {
     return html`
-<div class="wrapper">
-  <h3><span>${this.t.title}:</span> ${this.title}</h3>
-  <slot></slot>
-</div>`;
+    <div class="wrapper">
+      <slide-arrow
+    @prev-clicked="${this.prev}" 
+    @next-clicked="${this.next}">
+  </slide-arrow>
+      <slot></slot>
+      <slide-indicator
+        @play-list-index-changed=${this._handleIndexChange}
+        .total=${this.slideCount}
+        .currentIndex=${this.index}
+      ></slide-indicator>
+    </div>
+  `;
   }
+
+  // added to figure out slide index
+  firstUpdated() {
+  this.slides = Array.from(this.querySelectorAll("play-list-slide"));
+  this.slideCount = this.slides.length;
+  this.index = 0; // start at the first slide
+  this._updateSlides();
+}
+
+// actually update slides based on index
+_updateSlides() {
+  this.slides.forEach((slide, i) => {
+    slide.style.display = i === this.index ? "block" : "none";
+  });
+}
+
+next() {
+  if (this.index < this.slideCount - 1) {
+    this.index++;
+    this._updateSlides();
+  }
+}
+
+prev() {
+  if (this.index > 0) {
+    this.index--;
+    this._updateSlides();
+  }
+}
+
+_handleIndexChange(e) {
+  this.index = e.detail.index;
+  this._updateSlides();
+}
 
   /**
    * haxProperties integration via file reference
