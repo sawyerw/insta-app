@@ -11,7 +11,11 @@ export class InstaSlide extends DDDSuper((LitElement)) {
     return {
       instaCaption: { type: String, attribute: "insta-caption" },
       instaChannel: { type: String, attribute: "insta-channel" },
-      instaUsername: { type: String, attribute: "insta-username" }
+      instaUsername: { type: String, attribute: "insta-username" },
+      foxImage: { type: String },
+      foxLink: { type: String },
+
+      elementVisible: { type: Boolean, reflect: true } // controls lazy load
     };
   }
 
@@ -19,6 +23,21 @@ export class InstaSlide extends DDDSuper((LitElement)) {
     return new URL(`./lib/${this.tag}.haxProperties.json`, import.meta.url)
       .href;
   }
+
+  async loadFox() {
+  // prevent re-fetching if already loaded
+  if (this.foxImage) return;
+
+  try {
+    const res = await fetch("https://randomfox.ca/floof/");
+    const data = await res.json();
+
+    this.foxImage = data.image;
+    this.foxLink = data.link;
+  } catch (e) {
+    console.error("Fox fetch failed", e);
+  }
+}
 
   static get styles() {
     return css`
@@ -28,11 +47,26 @@ export class InstaSlide extends DDDSuper((LitElement)) {
 
       .slide {
         width: 350px;
-        height: 500px;
+        height: 600px;
         padding: 20px;
         margin: 10px 0;
-        background: var(--ddd-theme-default-slateLight);
+        background: var(--ddd-theme-default-white);
       }
+
+      .fox-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 10px 0;
+    }
+
+    .fox-container img {
+      width: 350px;
+      height: 350px;
+      object-fit: cover;
+      border-radius: 10px;
+      
+    }
 
       .insta-caption {
         font-size: 18px;
@@ -60,7 +94,7 @@ export class InstaSlide extends DDDSuper((LitElement)) {
         margin: var(--ddd-spacing-small) 0;
         font-size: 16px;
         color: var(--ddd-theme-default-nittanyNavy);
-        width: 300px;
+        width: 350px;
         height: 75px;
         overflow-y: auto;
       }
@@ -69,18 +103,39 @@ export class InstaSlide extends DDDSuper((LitElement)) {
     `;
   }
 
-  render() {
-    return html`
-      <div class="slide">
-        <h2 class="insta-channel">${this.instaChannel}</h2>
-        <h3 class="insta-username">${this.instaUsername}</h3>
-        <h1 class="insta-caption">${this.instaCaption}</h1>
-        <div class="comment-box">
-          <slot></slot>
-        </div>
-      </div>
-    `;
+  updated(changedProperties) {
+  if (changedProperties.has("elementVisible") && this.elementVisible) {
+    this.loadFox();
   }
+}
+
+
+  render() {
+  return html`
+    <div class="slide">
+      <h2 class="insta-channel">${this.instaChannel}</h2>
+      <h3 class="insta-username">${this.instaUsername}</h3>
+
+      ${this.elementVisible
+        ? html`
+            <div class="fox-container">
+              ${this.foxImage
+                ? html`<a href="${this.foxLink}" target="_blank">
+                    <img src="${this.foxImage}" alt="Random fox" />
+                  </a>`
+                : html`Loading...`}
+            </div>
+          `
+        : ``}
+
+      <h1 class="insta-caption">${this.instaCaption}</h1>
+
+      <div class="comment-box">
+        <slot></slot>
+      </div>
+    </div>
+  `;
+}
 }
 
 globalThis.customElements.define(InstaSlide.tag, InstaSlide);
