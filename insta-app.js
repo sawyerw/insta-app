@@ -36,12 +36,6 @@ export class InstaApp extends DDDSuper(I18NMixin(LitElement)) {
       ...this.t,
       title: "Title",
     };
-    this.registerLocalization({
-      context: this,
-      localesPath:
-        new URL("./locales/insta-app.", import.meta.url).href +
-        "/../",
-    });
   }
 
   // Lit reactive properties
