@@ -8,35 +8,27 @@ export class InstaSlide extends DDDSuper((LitElement)) {
   }
 
   static get properties() {
-    return {
-      instaCaption: { type: String, attribute: "insta-caption" },
+  return {
+    instaCaption: { type: String, attribute: "insta-caption" },
       instaChannel: { type: String, attribute: "insta-channel" },
       instaUsername: { type: String, attribute: "insta-username" },
-      foxImage: { type: String },
-      foxLink: { type: String },
-
-      elementVisible: { type: Boolean, reflect: true } // controls lazy load
-    };
-  }
+      profilePic:    { type: String },
+      userSince:     { type: String },
+      thumbnail:     { type: String },
+      dateTaken:     { type: String },
+      elementVisible: { type: Boolean },
+      liked: { type: Boolean }
+  };
+}
 
   static get haxProperties() {
     return new URL(`./lib/${this.tag}.haxProperties.json`, import.meta.url)
       .href;
   }
 
-  async loadFox() {
-  // prevent re-fetching if already loaded
-  if (this.foxImage) return;
-
-  try {
-    const res = await fetch("https://randomfox.ca/floof/");
-    const data = await res.json();
-
-    this.foxImage = data.image;
-    this.foxLink = data.link;
-  } catch (e) {
-    console.error("Fox fetch failed", e);
-  }
+  constructor() {
+  super();
+  this.liked = false;   // ADD
 }
 
   static get styles() {
@@ -53,86 +45,108 @@ export class InstaSlide extends DDDSuper((LitElement)) {
         background: var(--ddd-theme-default-white);
       }
 
-      .fox-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 10px 0;
-    }
+      .header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
 
-    .fox-container img {
-      width: 350px;
-      height: 350px;
-      object-fit: cover;
-      border-radius: 10px;
-      
-    }
+      .profile-pic {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
 
-      .insta-caption {
-        font-size: 18px;
-        font-family: var(--ddd-font-primary);
-        color: var(--ddd-theme-default-skyBlue);
-        margin: var(--ddd-spacing-small) 0;
+      .header-text {
+        display: flex;
+        flex-direction: column;
       }
 
       .insta-channel {
-        font-size: 50px;
-        margin: var(--ddd-spacing-small) 0;
-        color: gray;
-        font-family: var(--ddd-font-primary);
+        font-size: 30px;
+        font-weight: bold;
         color: var(--ddd-theme-default-nittanyNavy);
+        margin: 0;
       }
 
       .insta-username {
         font-size: 18px;
-        font-family: var(--ddd-font-primary);
         color: var(--ddd-theme-default-skyBlue);
-        margin: var(--ddd-spacing-small) 0;
+        margin: 0;
       }
 
-      .comment-box {
-        margin: var(--ddd-spacing-small) 0;
-        font-size: 16px;
+      .user-since {
+        font-size: 12px;
+        color: var(--ddd-theme-default-limestoneGray);
+        margin: 0;
+      }
+
+      .post-photo {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        border-radius: 8px;
+        margin: 10px 0;
+      }
+
+      .insta-caption {
+        font-size: 18px;
         color: var(--ddd-theme-default-nittanyNavy);
-        width: 350px;
-        height: 75px;
-        overflow-y: auto;
+        margin: 6px 0;
+      }
+
+      .date-taken {
+        font-size: 12px;
+        color: var(--ddd-theme-default-limestoneGray);
+        margin: 4px 0;
+      }
+
+      .like-btn {
+        background: none;
+        border: none;
+        font-size: 30px;
+        cursor: pointer;
+        padding: 4px;
+        margin-left: 300px;
       }
 
 
     `;
   }
 
-  updated(changedProperties) {
-  if (changedProperties.has("elementVisible") && this.elementVisible) {
-    this.loadFox();
-  }
-}
 
-
-  render() {
+render() {
   return html`
     <div class="slide">
-      <h2 class="insta-channel">${this.instaChannel}</h2>
-      <h3 class="insta-username">${this.instaUsername}</h3>
 
-      ${this.elementVisible
-        ? html`
-            <div class="fox-container">
-              ${this.foxImage
-                ? html`<a href="${this.foxLink}" target="_blank">
-                    <img src="${this.foxImage}" alt="Random fox" />
-                  </a>`
-                : html`Loading...`}
-            </div>
-          `
-        : ``}
-
-      <h1 class="insta-caption">${this.instaCaption}</h1>
-
-      <div class="comment-box">
-        <slot></slot>
+      <div class="header">
+        <img class="profile-pic" src="${this.profilePic}" alt="${this.instaChannel}" />
+        <div class="header-text">
+          <span class="insta-channel">${this.instaChannel}</span>
+          <span class="insta-username">${this.instaUsername}</span>
+          <span class="user-since">Member since ${this.userSince}</span>
+        </div>
       </div>
+
+      <img
+        class="post-photo"
+        src="${this.elementVisible ? this.thumbnail : ''}"
+        alt="post photo"
+      />
+
+      <button class="like-btn" @click=${() => this.dispatchEvent(
+            new CustomEvent('toggle-like', { bubbles: true, composed: true })
+          )}>
+            ${this.liked ? "❤️" : "🤍"}
+      </button>
+
+      <p class="insta-caption">${this.instaCaption}</p>
+      <p class="date-taken">📅 ${this.dateTaken}</p>
+
+      
+
     </div>
   `;
 }

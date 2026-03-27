@@ -1,0 +1,59 @@
+{
+  "data": [
+    {
+      "author": {
+        "insta-channel": "Sawyer",
+        "insta-username": "@ahoy.soy",
+        "profile-pic": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXmbOOp0dZLFSeF698SVKhyjAY1RIZa0_MmjT482TxPemWVlcF-AzoQfKVaK9kDGAKiD9k9Rf1cgQIeQ97Bgx6G6PtHjBZvHhccHcWfXk&s=10",
+        "user-since": "11-15-2019"
+      },
+      "image": {
+        "post-photo": "https://randomfox.ca/images/1.jpg",
+        "date-taken": "3-26-2026",
+        "insta-caption": "Check out this fox!"
+      }
+    },
+
+    {
+      "author": {
+        "insta-channel": "Izzy",
+        "insta-username": "@figma_lover",
+        "profile-pic": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSoVAw4JchHt4wlwLsHAHJO0rVBiTr1Qr1PfQ&s",
+        "user-since": "11-8-2020"
+      },
+      "image": {
+        "post-photo": "https://randomfox.ca/images/2.jpg",
+        "date-taken": "3-26-2026",
+        "insta-caption": "Woahh a fox (again)!"
+      }
+    },
+
+    {
+      "author": {
+        "insta-channel": "Sydney",
+        "insta-username": "@blondie",
+        "profile-pic": "https://www.pluggedin.com/wp-content/uploads/2019/12/Trolls_Large.jpg-1024x587.jpeg",
+        "user-since": "11-8-2020"
+      },
+      "image": {
+        "post-photo": "https://randomfox.ca/images/3.jpg",
+        "date-taken": "3-26-2026",
+        "insta-caption": "I love trolls and foxes!"
+      }
+    },
+
+    {
+      "author": {
+        "insta-channel": "Grace",
+        "insta-username": "@snoodlefloo",
+        "profile-pic": "https://www.earthandanimals.com/files/547756/catitems/Mink-7e5cbfea98b8373c7e56d02314432677.jpg",
+        "user-since": "11-8-2020"
+      },
+      "image": {
+        "post-photo": "https://randomfox.ca/images/4.jpg",
+        "date-taken": "3-26-2026",
+        "insta-caption": "Minxy"
+      }
+    }
+  ]
+}
