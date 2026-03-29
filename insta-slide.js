@@ -1,5 +1,6 @@
 import { LitElement, html, css } from "lit";
 import { DDDSuper } from "@haxtheweb/d-d-d/d-d-d.js";
+import "./insta-slide-indicator.js";
 
 export class InstaSlide extends DDDSuper((LitElement)) {
 
@@ -17,7 +18,9 @@ export class InstaSlide extends DDDSuper((LitElement)) {
       thumbnail:     { type: String },
       dateTaken:     { type: String },
       elementVisible: { type: Boolean },
-      liked: { type: Boolean }
+      liked: { type: Boolean },
+      images: { type: Array },
+      currentIndex: { type: Number }
   };
 }
 
@@ -28,7 +31,9 @@ export class InstaSlide extends DDDSuper((LitElement)) {
 
   constructor() {
   super();
-  this.liked = false;   // ADD
+  this.liked = false; 
+  this.images = [];
+  this.currentIndex = 0;
 }
 
   static get styles() {
@@ -39,7 +44,7 @@ export class InstaSlide extends DDDSuper((LitElement)) {
 
       .slide {
         width: 350px;
-        height: 600px;
+        height: 650px;
         padding: 20px;
         margin: 10px 0;
         background: var(--ddd-theme-default-white);
@@ -110,6 +115,7 @@ export class InstaSlide extends DDDSuper((LitElement)) {
         cursor: pointer;
         padding: 4px;
         margin-left: 300px;
+        margin-top: -20px;
       }
 
 
@@ -136,6 +142,14 @@ render() {
         alt="post photo"
       />
 
+      <insta-slide-indicator
+        .total=${this.images.length}
+        .currentIndex=${this.currentIndex}
+        .images=${this.images}
+      ></insta-slide-indicator>
+
+      <
+
       <button class="like-btn" @click=${() => this.dispatchEvent(
             new CustomEvent('toggle-like', { bubbles: true, composed: true })
           )}>
@@ -145,7 +159,6 @@ render() {
       <p class="insta-caption">${this.instaCaption}</p>
       <p class="date-taken">📅 ${this.dateTaken}</p>
 
-      
 
     </div>
   `;

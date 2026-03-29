@@ -3,6 +3,7 @@ import { DDDSuper } from "@haxtheweb/d-d-d/d-d-d.js";
 import { I18NMixin } from "@haxtheweb/i18n-manager/lib/I18NMixin.js";
 import "./insta-slide.js";
 import "./insta-slide-arrow.js";
+import "./insta-slide-indicator.js";
 
 
 export class InstaApp extends DDDSuper(I18NMixin(LitElement)) {
@@ -48,7 +49,7 @@ export class InstaApp extends DDDSuper(I18NMixin(LitElement)) {
 
   render() {
   return html`
-    <div class="wrapper">
+    <div class="wrapper" @play-list-index-changed=${this._onIndicatorChange}>
       <insta-slide-arrow
         .index=${this.index}
         .slideCount=${this.slideCount}
@@ -61,6 +62,7 @@ export class InstaApp extends DDDSuper(I18NMixin(LitElement)) {
           .elementVisible=${i === this.index}
           .liked=${this.likes[i] ?? false}
           @toggle-like=${() => this.toggleLike(i)}
+
           insta-channel="${item.author['insta-channel']}"
           insta-username="${item.author['insta-username']}"
           .profilePic="${item.author['profile-pic']}"
@@ -69,8 +71,12 @@ export class InstaApp extends DDDSuper(I18NMixin(LitElement)) {
           .dateTaken="${item.image['date-taken']}"
           insta-caption="${item.image['insta-caption']}"
           style="display: ${i === this.index ? 'block' : 'none'}"
+
+          .images=${this.data.map(item => item.image['post-photo'])}
+          .currentIndex=${this.index}
         ></insta-slide>
       `)}
+
     </div>
   `;
 }
@@ -107,6 +113,10 @@ toggleLike(i) {
       this.index--;
     }
   }
+
+  _onIndicatorChange(e) {
+  this.index = e.detail.index;
+}
 
   static get haxProperties() {
     return new URL(`./lib/${this.tag}.haxProperties.json`, import.meta.url).href;
