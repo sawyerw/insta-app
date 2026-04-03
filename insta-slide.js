@@ -45,7 +45,7 @@ export class InstaSlide extends DDDSuper((LitElement)) {
       .slide {
         width: 350px;
         height: 650px;
-        padding: 20px;
+        padding: var(--ddd-spacing-5);
         margin: 10px 0;
         background: var(--ddd-theme-default-white);
       }
@@ -70,20 +70,20 @@ export class InstaSlide extends DDDSuper((LitElement)) {
       }
 
       .insta-channel {
-        font-size: 30px;
+        font-size: var(--ddd-font-size-3xs);
         font-weight: bold;
         color: var(--ddd-theme-default-nittanyNavy);
         margin: 0;
       }
 
       .insta-username {
-        font-size: 18px;
+        font-size: var(--ddd-font-size-3xs);
         color: var(--ddd-theme-default-skyBlue);
         margin: 0;
       }
 
       .user-since {
-        font-size: 12px;
+        font-size: var(--ddd-font-size-4xs);
         color: var(--ddd-theme-default-limestoneGray);
         margin: 0;
       }
@@ -92,7 +92,7 @@ export class InstaSlide extends DDDSuper((LitElement)) {
         width: 100%;
         aspect-ratio: 1 / 1;
         object-fit: cover;
-        border-radius: 8px;
+        border-radius: var(--ddd-radius-md);
         margin: 10px 0;
       }
 

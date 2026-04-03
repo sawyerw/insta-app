@@ -38,6 +38,8 @@ export class InstaSlideIndicator extends DDDSuper(I18NMixin(LitElement)) {
         gap: var(--ddd-spacing-2);
         padding: var(--ddd-spacing-1);
         justify-content: center;
+        background-color: var(--ddd-theme-default-skyLight);
+        border-radius: var(--ddd-radius-md);
       }
 
       .thumbs {
