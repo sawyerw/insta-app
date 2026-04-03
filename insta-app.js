@@ -82,7 +82,7 @@ export class InstaApp extends DDDSuper(I18NMixin(LitElement)) {
 }
 
   async firstUpdated() {
-    const res = await fetch("./data.json");
+    const res = await fetch(new URL("./data.json", import.meta.url).href);
     const json = await res.json();
     this.data = json.data;
     this.slideCount = this.data.length;

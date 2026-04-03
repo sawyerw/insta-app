@@ -1,0 +1,24 @@
+Things to change:
+
+light-dark() support dark mode
+support for inaccessible for blind people, have textual label
+thumbnail scrolls naturally
+share button 
+lighthouse
+scroll into view with item thats on screen. find item thats active and .scrollintoview
+lazy loading on thumbnails
+use updated, when active index changes you need to update the url (check in vercel)
+If you maintain the index, you can reload and it stays on pirates 13. when you share it, 
+It's supposed to work on local host 8000
+the index.html can be updated with specific height and width (check photos)
+
+hax audit (find ddd mistakes)
+control click on ddd at the top of insta slide
+can right click and inspect in docs
+
+15 slides made
+
+check with json file
+new URL("./data.json", import.meta.url).href;
+
+this format needs to replace anywhere with string data.json to get it to work in vercel
