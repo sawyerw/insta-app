@@ -13,7 +13,6 @@ export class InstaSlideIndicator extends DDDSuper(I18NMixin(LitElement)) {
     this.total = 0;
     this.currentIndex = 0;
     this.images = [];
-    this._thumbOffset = 0; // which group of 4 we're viewing
   }
 
   static get properties() {
@@ -22,8 +21,17 @@ export class InstaSlideIndicator extends DDDSuper(I18NMixin(LitElement)) {
       total: { type: Number },
       currentIndex: { type: Number },
       images: { type: Array },
-      _thumbOffset: { type: Number },
     };
+  }
+
+  // Whenever currentIndex changes, scroll the active thumb into view
+  updated(changedProps) {
+    if (changedProps.has("currentIndex")) {
+      const active = this.shadowRoot.querySelector(".thumb.active");
+      if (active) {
+        active.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+      }
+    }
   }
 
   static get styles() {
@@ -34,10 +42,10 @@ export class InstaSlideIndicator extends DDDSuper(I18NMixin(LitElement)) {
 
       .thumbnail-bar {
         display: flex;
+        flex-direction: column;
         align-items: center;
-        gap: var(--ddd-spacing-2);
+        gap: var(--ddd-spacing-1);
         padding: var(--ddd-spacing-1);
-        justify-content: center;
         background-color: var(--ddd-theme-default-skyLight);
         border-radius: var(--ddd-radius-md);
       }
@@ -45,73 +53,63 @@ export class InstaSlideIndicator extends DDDSuper(I18NMixin(LitElement)) {
       .thumbs {
         display: flex;
         gap: var(--ddd-spacing-2);
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        width: 100%;
+        padding-bottom: var(--ddd-spacing-1);
+
+        /* Show scrollbar on all browsers */
+        scrollbar-width: thin;
+        scrollbar-color: var(--ddd-theme-default-nittanyNavy) transparent;
+      }
+
+      /* horizontal scrollbar */
+      .thumbs::-webkit-scrollbar {
+        height: 5px;
+      }
+      .thumbs::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .thumbs::-webkit-scrollbar-thumb {
+        background-color: var(--ddd-theme-default-nittanyNavy);
+        border-radius: var(--ddd-radius-md);
       }
 
       .thumb {
         width: 50px;
         height: 50px;
         object-fit: cover;
-        border-radius: 6px;
+        border-radius: var(--ddd-radius-sm);
         cursor: pointer;
         border: 3px solid transparent;
         transition: border-color 0.2s;
+        flex-shrink: 0; /* Prevents thumbnails from squishing */
       }
 
       .thumb.active {
         border-color: var(--ddd-theme-default-skyBlue);
       }
-
-      button {
-        color: var(--ddd-theme-default-white);
-        background-color: var(--ddd-theme-default-nittanyNavy);
-        padding: var(--ddd-spacing-1) var(--ddd-spacing-3);
-        border-radius: var(--ddd-radius-circle);
-        cursor: pointer;
-        font-size: var(--ddd-font-size-s);
-        border: none;
-      }
-
-      button:hover {
-        background-color: var(--ddd-theme-default-white);
-        color: var(--ddd-theme-default-nittanyNavy);
-      }
-
-      button:disabled {
-        opacity: 0.3;
-        cursor: default;
-      }
     `];
   }
 
   render() {
-    const visible = this.images.slice(this._thumbOffset, this._thumbOffset + 4);
-
     return html`
       <div class="thumbnail-bar">
-        <button
-          ?disabled=${this._thumbOffset === 0}
-          @click=${this._prevThumbs}
-        >&lt;</button>
-
         <div class="thumbs">
-          ${visible.map((src, i) => {
-            const realIndex = this._thumbOffset + i;
-            return html`
-              <img
-                class="thumb ${realIndex === this.currentIndex ? 'active' : ''}"
-                src="${src}"
-                data-index="${realIndex}"
-                @click=${this._handleThumbClick}
-                alt="slide ${realIndex + 1}"
-              />
-            `;
-          })}
+          ${this.images.map((src, i) => html`
+            <img
+            loading="lazy"
+            width="50"
+            height="50"
+            
+              class="thumb ${i === this.currentIndex ? 'active' : ''}"
+              src="${src}"
+              data-index="${i}"
+              @click=${this._handleThumbClick}
+              alt="slide ${i + 1}"
+            />
+          `)}
         </div>
-
-        <button
-          ?disabled=${this._thumbOffset + 4 >= this.total}
-          @click=${this._nextThumbs}
-        >&gt;</button>
       </div>
     `;
   }
@@ -123,18 +121,6 @@ export class InstaSlideIndicator extends DDDSuper(I18NMixin(LitElement)) {
       bubbles: true,
       detail: { index: idx },
     }));
-  }
-
-  _prevThumbs() {
-    if (this._thumbOffset > 0) {
-      this._thumbOffset = Math.max(0, this._thumbOffset - 4);
-    }
-  }
-
-  _nextThumbs() {
-    if (this._thumbOffset + 4 < this.total) {
-      this._thumbOffset = Math.min(this.total - 4, this._thumbOffset + 4);
-    }
   }
 }
 

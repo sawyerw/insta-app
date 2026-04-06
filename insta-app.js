@@ -38,12 +38,21 @@ export class InstaApp extends DDDSuper(I18NMixin(LitElement)) {
     return [super.styles, css`
       :host {
         display: block;
+        color-scheme: light dark;
         font-family: var(--ddd-font-navigation);
       }
       .wrapper {
         margin: var(--ddd-spacing-2);
         padding: var(--ddd-spacing-4);
       }
+
+      @media (max-width: 480px) { // some mobile responsiveness
+        .wrapper {
+          margin: 0;
+          padding: var(--ddd-spacing-1);
+        }
+      }
+
     `];
   }
 
@@ -86,7 +95,10 @@ export class InstaApp extends DDDSuper(I18NMixin(LitElement)) {
     const json = await res.json();
     this.data = json.data;
     this.slideCount = this.data.length;
-    this.index = 0;
+    // instead of starting at 0, start at the current slide
+    const hash = new URLSearchParams(location.hash.slice(1));
+    const startIndex = parseInt(hash.get("slide"));
+    this.index = !isNaN(startIndex) && startIndex < this.data.length ? startIndex : 0;
 
     // load likes from localStorage for each slide
   this.likes = this.data.map((_, i) => {
@@ -105,17 +117,24 @@ toggleLike(i) {
   next() {
     if (this.index < this.slideCount - 1) {
       this.index++;
+      this._syncHash();
     }
   }
 
   prev() {
     if (this.index > 0) {
       this.index--;
+      this._syncHash();
     }
   }
 
   _onIndicatorChange(e) {
   this.index = e.detail.index;
+  this._syncHash();
+}
+
+_syncHash() {
+  location.replace("#slide=" + this.index);
 }
 
   static get haxProperties() {
